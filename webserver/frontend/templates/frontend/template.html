@@ -1,0 +1,158 @@
+<div id="app-container" class="min-h-screen bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed left-0 top-0 w-64 h-full bg-white border-r border-gray-200 shadow-lg">
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-indigo-600">D</span>
+                <select class="bg-transparent text-gray-700 font-medium focus:outline-none">
+                    <option>DEFAULT</option>
+                </select>
+            </div>
+        </div>
+        
+        <nav class="p-4 space-y-2">
+            <a href="#" class="flex items-center space-x-3 p-3 text-indigo-600 bg-indigo-50 rounded-lg">
+                <i class="fa-solid fa-chart-line"></i>
+                <span>DASHBOARD</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fa-solid fa-play"></i>
+                <span>SESSIONS</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>PLAYGROUND</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <i class="fa-solid fa-gear"></i>
+                <span>SETTINGS</span>
+            </a>
+            <a href="#" class="flex items-center justify-between p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-key"></i>
+                    <span>API KEY</span>
+                </div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
+        </nav>
+
+        <div class="absolute bottom-0 left-0 right-0 border-t border-gray-200">
+            <nav class="p-4 space-y-2">
+                <a href="#" class="flex items-center justify-between p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-book"></i>
+                        <span>DOCS</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-users"></i>
+                        <span>COMMUNITY</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-github"></i>
+                        <span>GITHUB</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                </a>
+                <div class="border-t border-gray-200 pt-2">
+                    <a href="#" class="flex items-center justify-between p-3 text-gray-700 hover:bg-gray-100 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-2.jpg" class="w-8 h-8 rounded-full" alt="Profile" />
+                            <span>ALLAN TORRES</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="ml-64 p-8">
+        <!-- Header -->
+        <div id="header" class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">DASHBOARD</h1>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <i class="fa-solid fa-globe text-gray-600"></i>
+                    <span class="text-gray-600">UTC</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-sm">
+                    <span class="text-gray-600">MAR 2025</span>
+                    <div class="flex space-x-1">
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <button class="p-2 hover:bg-gray-100 rounded-lg">
+                    <i class="fa-solid fa-arrows-rotate text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Icons -->
+        <div id="status-section" class="flex justify-center space-x-4 mb-12">
+            <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-robot text-white text-xl"></i>
+            </div>
+            <div class="w-12 h-12 bg-gray-900 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-microchip text-white text-xl"></i>
+            </div>
+            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center shadow-lg">
+                <i class="fa-solid fa-brain text-gray-400 text-xl"></i>
+            </div>
+        </div>
+
+        <!-- No Data Message -->
+        <div id="no-data-message" class="text-center mb-12">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">No data yet</h2>
+            <p class="text-gray-500">There's nothing to display for the selected month.</p>
+        </div>
+
+        <!-- Charts Section -->
+        <div id="charts-section" class="grid grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-500">NO DATA</span>
+                    <span class="text-gray-400">—</span>
+                </div>
+                <div class="h-48 flex items-end justify-between">
+                    {/* Chart placeholder */}
+                    <div class="border-b border-gray-200 w-full flex justify-between items-end">
+                        <div class="text-gray-400 text-sm">0</div>
+                        <div class="text-gray-400 text-sm">1</div>
+                        <div class="text-gray-400 text-sm">2</div>
+                        <div class="text-gray-400 text-sm">3</div>
+                        <div class="text-gray-400 text-sm">4</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-500">NO DATA</span>
+                    <span class="text-gray-400">—</span>
+                </div>
+                <div class="h-48 flex items-end justify-between">
+                    {/* Chart placeholder */}
+                    <div class="border-b border-gray-200 w-full flex justify-between items-end">
+                        <div class="text-gray-400 text-sm">0</div>
+                        <div class="text-gray-400 text-sm">1</div>
+                        <div class="text-gray-400 text-sm">2</div>
+                        <div class="text-gray-400 text-sm">3</div>
+                        <div class="text-gray-400 text-sm">4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

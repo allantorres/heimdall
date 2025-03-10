@@ -1,0 +1,151 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+
+{% block title %}Agent Metrics - Heimdall{% endblock %}
+{% block header_title %}METRICS{% endblock %}
+
+{% block header_actions %}
+<div class="flex items-center space-x-4">
+    <select id="timeRangeSelector" class="bg-white border border-gray-300 rounded-md px-4 py-2 text-sm">
+        <option value="7">Last 7 Days</option>
+        <option value="14">Last 14 Days</option>
+        <option value="30" selected>Last 30 Days</option>
+        <option value="90">Last 90 Days</option>
+    </select>
+    <button id="exportCSV" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50 flex items-center">
+        <i class="fa-solid fa-download mr-2"></i> Export CSV
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <!-- Total Executions Card -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-gray-500 text-sm font-medium">Total Executions</h3>
+        <p class="text-3xl font-bold text-gray-900">{{ total_executions }}</p>
+        <div class="mt-2 flex items-center text-sm">
+            <span class="{% if execution_increase > 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                {% if execution_increase > 0 %}↑{% else %}↓{% endif %} {{ execution_increase|abs|floatformat:1 }}%
+            </span>
+            <span class="text-gray-500 ml-2">from previous period</span>
+        </div>
+    </div>
+
+    <!-- Average Response Time Card -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-gray-500 text-sm font-medium">Avg Response Time</h3>
+        <p class="text-3xl font-bold text-gray-900">{{ avg_response_time }}s</p>
+        <div class="mt-2 flex items-center text-sm">
+            <span class="text-green-500">↓ {{ response_time_improvement }}%</span>
+            <span class="text-gray-500 ml-2">faster than previous period</span>
+        </div>
+    </div>
+
+    <!-- Total Cost Card -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-gray-500 text-sm font-medium">Total Cost</h3>
+        <p class="text-3xl font-bold text-gray-900">${{ total_cost }}</p>
+        <div class="mt-2 flex items-center text-sm">
+            <span class="{% if cost_change < 0 %}text-green-500{% else %}text-red-500{% endif %}">
+                {% if cost_change < 0 %}↓ {{ cost_change|floatformat:1|slice:"1:" }}{% else %}↑ {{ cost_change|floatformat:1 }}{% endif %}%
+            </span>
+            <span class="text-gray-500 ml-2">from previous period</span>
+        </div>
+    </div>
+
+    <!-- Success Rate Card -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-gray-500 text-sm font-medium">Success Rate</h3>
+        <p class="text-3xl font-bold text-gray-900">{{ success_rate }}%</p>
+        <div class="mt-2 flex items-center text-sm">
+            <span class="text-green-500">↑ {{ success_rate_increase }}%</span>
+            <span class="text-gray-500 ml-2">from previous period</span>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Executions Over Time -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Executions Over Time</h3>
+        <canvas id="executionsChart"></canvas>
+    </div>
+
+    <!-- Daily Cost Trend -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Daily Cost Trend</h3>
+        <canvas id="costChart"></canvas>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+    <!-- Response Time Distribution -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Response Time Distribution</h3>
+        <canvas id="responseTimeChart"></canvas>
+    </div>
+
+    <!-- Token Usage Trend -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Token Usage Trend</h3>
+        <canvas id="tokenUsageChart"></canvas>
+    </div>
+</div>
+
+<!-- Cost Breakdown -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h3 class="text-lg font-medium text-gray-900 mb-4">Cost Breakdown by Agent</h3>
+    <canvas id="costBreakdownChart"></canvas>
+</div>
+
+<!-- Recent Executions Table -->
+<div class="mt-6 bg-white rounded-lg shadow-md">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-900">Recent Executions</h3>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Response Time</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tokens</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for execution in recent_executions %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ execution.agent.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if execution.status == 'success' %}bg-green-100 text-green-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ execution.status }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ execution.execution_time|floatformat:2 }}s</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ execution.tokens_used }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${{ execution.cost|floatformat:4 }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">{{ execution.created_at|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script>
+    // Initialize metrics data from Django
+    const metricsData = {{ metrics_data|safe }};
+</script>
+<script src="{% static 'js/metrics.js' %}"></script>
+{% endblock %}
